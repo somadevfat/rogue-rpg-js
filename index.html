@@ -7,10 +7,45 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <div id="title-screen" class="screen">
-      <h1>JS Quest RPG</h1>
-      <button id="start-button">スタート</button>
-      <button id="continue-button" class="hidden">コンティニュー</button>
+    <div id="game-container">
+      <!-- タイトル画面 -->
+      <div id="title-screen" class="screen">
+        <h1>RPGタイトル</h1>
+        <button id="start-button">スタート</button>
+        <button id="continue-button">コンティニュー</button>
+      </div>
+
+      <!-- キャラクター選択画面 -->
+      <div id="character-selection-screen" class="screen hidden">
+        <p id="character-text">キャラクターを選択してください：</p>
+        <div class="character-options">
+          <div class="character-card" data-character="swordsman">剣士</div>
+          <div class="character-card" data-character="mage">魔法使い</div>
+        </div>
+        <p>キャラクター名を入力してください：</p>
+        <div class="input-group">
+          <input type="text" id="character-name" placeholder="名前" />
+          <button id="confirm-character-button">決定</button>
+        </div>
+      </div>
+
+      <!-- フィールド画面 -->
+      <div id="field-screen" class="screen hidden">
+        <div id="enemy-field-background">
+          <div id="enemy-display-area">敵表示</div>
+        </div>
+        <div id="status-display-area">ステータス表示</div>
+        <div id="command-display-area">コマンド表示</div>
+        <div id="message-display-area">メッセージ表示</div>
+        <div id="d-pad">
+          <!-- 方向キー -->
+        </div>
+      </div>
+
+      <!-- バトル画面 (フィールド画面と構造を共有する可能性も考慮しつつ、今は分離) -->
+      <div id="battle-screen" class="screen hidden">
+        <!-- バトル画面のコンテンツ -->
+      </div>
     </div>
     <script type="module" src="js/main.js"></script>
   </body>
