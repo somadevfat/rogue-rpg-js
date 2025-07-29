@@ -1,49 +1,31 @@
 "use strict";
 export class SceneManager {
   constructor() {
-    this.titleScreen = document.getElementById("title-screen");
-    this.characterSerectScreen = document.getElementById(
-      "character-selection-screen"
-    );
-    this.fieldScreen = document.getElementById("field-screen");
+    // 各シーンの要素を保持するオブジェクト
+    this.scenes = {
+      title: document.getElementById("title-screen"),
+      characterSelect: document.getElementById("character-selection-screen"),
+      field: document.getElementById("field-screen"),
+    };
   }
 
-  // ===== 画面遷移 =====
-  movePage(page) {
-    // ページ番号に応じて遷移先を設定
-    switch (page) {
-      case 0:
-        this.titleScreen.className = "visible";
-        this.characterSerectScreen.className = "hidden";
-        this.fieldScreen.className = "hidden";
-        break;
-      case 1:
-        this.titleScreen.className = "hidden";
-        this.characterSerectScreen.className = "visible";
-        this.fieldScreen.className = "hidden";
-        break;
-      case 2:
-        this.titleScreen.className = "hidden";
-        this.characterSerectScreen.className = "hidden";
-        this.fieldScreen.className = "visible";
-        break;
-      default:
-        break;
+  /**
+   * 指定された名前のシーンを表示し、他を非表示にする
+   * @param {string} sceneName 表示するシーンの名前 ('title', 'characterSelect', 'field')
+   */
+  show(sceneName) {
+    // 全てのシーンを一旦非表示にする
+    for (const key in this.scenes) {
+      this.scenes[key].classList.remove("visible");
+      this.scenes[key].classList.add("hidden");
     }
-  }
 
-  startButtonSetEvent() {
-    const startButton = document.getElementById("start-button");
-    startButton.addEventListener("click", () => {
-      this.movePage(1);
-    });
-  }
-  selectCharacterBtnSetEvent() {
-    const characterCards = document.getElementsByClassName("character-card");
-    Array.from(characterCards).forEach((card) => {
-      card.addEventListener("click", () => {
-        this.movePage(2);
-      });
-    });
+    // 指定されたシーンのみを表示する
+    if (this.scenes[sceneName]) {
+      this.scenes[sceneName].classList.remove("hidden");
+      this.scenes[sceneName].classList.add("visible");
+    } else {
+      console.error(`Scene "${sceneName}" not found.`);
+    }
   }
 }

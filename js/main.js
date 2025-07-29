@@ -1,13 +1,21 @@
 "use strict";
+
 import { SceneManager } from "./managers/SceneManager.js";
+import { UIManager } from "./managers/UIManager.js";
+import { GameManager } from "./managers/GameManager.js";
 
-// ===== 画面遷移 =====
+// DOMが完全に読み込まれてからゲームを開始する
+window.addEventListener("DOMContentLoaded", () => {
+  // 1. 各マネージャーをインスタンス化する
+  const sceneManager = new SceneManager();
+  const uiManager = new UIManager();
 
-const sceneManager = new SceneManager();
+  // GameManagerには、他のマネージャーを渡してあげる（依存性の注入）
+  const gameManager = new GameManager(uiManager, sceneManager);
 
-// 最初の画面を表示
-sceneManager.movePage(0);
+  // 2. UIのイベントリスナーをセットアップする
+  uiManager.setupEventListeners();
 
-// 最低限の画面遷移
-sceneManager.startButtonSetEvent();
-sceneManager.selectCharacterBtnSetEvent();
+  // 3. ゲームを開始する
+  gameManager.startGame();
+});
