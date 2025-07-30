@@ -22,7 +22,7 @@
           <div class="character-card" data-character="warrior">戦士</div>
           <div class="character-card" data-character="mage">魔法使い</div>
         </div>
-        <p>キャラクター名を入力してください：</p>
+        <label for="character-name">キャラクター名を入力してください：</label>
         <div class="input-group">
           <input type="text" id="character-name" placeholder="名前" />
           <button id="confirm-character-button">決定</button>
@@ -35,7 +35,11 @@
           <div id="enemy-display-area">敵表示</div>
         </div>
         <div id="status-display-area">ステータス表示</div>
-        <div id="command-display-area">コマンド表示</div>
+        <div id="command-display-area">
+          <button id="attack-button">たたかう</button>
+          <button id="escape-button">逃げる</button>
+          <button id="save-button">セーブ</button>
+        </div>
         <div id="message-display-area">メッセージ表示</div>
         <div id="d-pad">
           <button class="dpad-button up" data-direction="up">▲</button>

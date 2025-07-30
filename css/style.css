@@ -144,6 +144,10 @@ h1 {
   margin-left: 20px;
   border: 1px solid #fff;
   margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
 
 #message-display-area {
@@ -195,4 +199,8 @@ h1 {
   /* Styles for the down button */
   grid-column: 2 / 3;
   grid-row: 3 / 4;
+}
+
+#attack-button {
+  margin-top: 20px;
 }

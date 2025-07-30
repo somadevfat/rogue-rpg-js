@@ -6,7 +6,8 @@ export class Character {
     levelUpThreshold = 3,
     encounterRate = 0.5,
     winProbability = 0.5,
-    escapeRate = 0.5
+    escapeRate = 0.5,
+    expGainMultiplierOnLevelUp = 1.0
   ) {
     if (new.target === Character) {
       throw new Error(
@@ -15,22 +16,46 @@ export class Character {
     }
     this.name = name;
     this.level = level;
+    this.exp = 0;
     this.levelUpThreshold = levelUpThreshold;
     this.encounterRate = encounterRate;
     this.winProbability = winProbability;
     this.escapeRate = escapeRate;
     this.jobName = jobName;
+    this.expGainMultiplierOnLevelUp = expGainMultiplierOnLevelUp;
+  }
+
+  /**
+   * 経験値を獲得し、レベルアップ判定を行う
+   * @param {number} amount 獲得する経験値の量
+   * @returns {boolean} レベルアップしたかどうか
+   */
+  gainExp(amount) {
+    this.exp += amount;
+    let leveledUp = false;
+
+    // 経験値が次のレベルの閾値に達しているか、ループでチェック
+    while (this.exp >= this.levelUpThreshold) {
+      this.level++;
+      this.exp -= this.levelUpThreshold;
+      // 次のレベルアップに必要な経験値を更新（小数点以下は切り捨て）
+      this.levelUpThreshold = Math.floor(
+        this.levelUpThreshold * this.expGainMultiplierOnLevelUp
+      );
+      leveledUp = true;
+    }
+    return leveledUp;
   }
 }
 
 export class Warrior extends Character {
   constructor(name) {
-    super(name, "戦士", 1, 3, 0.5, 0.7, 0.3);
+    super(name, "戦士", 1, 3, 0.5, 0.7, 0.3, 1.2);
   }
 }
 
 export class Mage extends Character {
   constructor(name) {
-    super(name, "魔法使い", 1, 3, 0.5, 0.6, 0.4);
+    super(name, "魔法使い", 1, 3, 0.5, 0.6, 0.4, 1.1);
   }
 }
