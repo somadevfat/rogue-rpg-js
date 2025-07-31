@@ -19,6 +19,9 @@ export class UIManager {
     );
 
     // フィールド画面
+    this.fieldBackground = document.getElementById("enemy-field-background");
+    this.playerImage = document.getElementById("player-character-image");
+    this.enemyImage = document.getElementById("enemy-image");
     this.attackButton = document.getElementById("attack-button");
     this.escapeButton = document.getElementById("escape-button");
     this.saveButton = document.getElementById("save-button");
@@ -140,5 +143,45 @@ export class UIManager {
    */
   hideOverlay() {
     this.overlay.classList.add("hidden");
+  }
+
+  /**
+   * フィールドの背景画像を設定する
+   * @param {string} imageUrl
+   */
+  setFieldBackground(imageUrl) {
+    this.fieldBackground.style.backgroundImage = `url(${imageUrl})`;
+  }
+
+  /**
+   * プレイヤーの画像を設定する
+   * @param {string} imageUrl
+   */
+  setPlayerImage(imageUrl) {
+    this.playerImage.src = imageUrl;
+    this.playerImage.classList.remove("hidden");
+  }
+
+  /**
+   * 敵の画像を設定し、表示する
+   * @param {string} imageUrl
+   */
+  showEnemy(imageUrl) {
+    this.enemyImage.src = imageUrl;
+    this.enemyImage.classList.remove("hidden", "dead");
+  }
+
+  /**
+   * 敵の画像を非表示にする
+   */
+  hideEnemy() {
+    this.enemyImage.classList.add("hidden");
+  }
+
+  /**
+   * 敵が倒された時の表示にする
+   */
+  setEnemyAsDefeated() {
+    this.enemyImage.classList.add("dead");
   }
 }
