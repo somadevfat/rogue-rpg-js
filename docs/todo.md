@@ -5,9 +5,20 @@
 - [-] **レベルアップ時の勝率上昇**
   - [-] `Character.js` のレベルアップ処理に、勝利確率(`winProbability`)を上昇させるロジックを追加する。
 - [ ] **ステータス記録・計算**
-  - [ ] 敵の討伐数を記録する (`Character.js` または `GameManager.js`)
-  - [ ] 敵出現ログ（履歴）を記録する (`GameManager.js`)
-  - [ ] 敵出現平均歩数を計算するロジックを実装する (`GameManager.js`)
+
+  - [-] 敵の討伐数を記録する (`Character.js` または `GameManager.js`)
+  - [-] 敵出現ログ（履歴）を記録する (`GameManager.js`)
+    js/managers/GameManager.js 153 で敵作成
+    this.enemyCount++;
+    this.enemyHistory.push(enemy.name); // 敵の名前を履歴に追加
+    21,22 行目
+    this.enemyCount = 0; // 敵の出現回数をカウントするための変数
+    this.enemyHistory = []; // 敵の出現履歴を保持する配列
+
+  - [-] 敵出現平均歩数を計算するロジックを実装する (`GameManager.js`)160 行目
+    this.aveWalkEncounterRate = 0; // 平均エンカウント率を計算するための変数
+    this.aveWalkEncounterRate = this.enemyCount / this.walkCount\*100; // 平均エンカウント率を計算
+
 - [ ] **ブラウザ制御**
   - [ ] フィールド画面でリロード(F5)を無効化する
   - [ ] フィールド画面でブラウザの「戻る」機能を無効化する
