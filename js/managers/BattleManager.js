@@ -39,7 +39,7 @@ export class BattleManager {
     console.log("逃げる！");
 
     // 逃走判定
-    if (Math.random() < /*his.player.escapeRate*/ -1) {
+    if (Math.random() < this.player.escapeRate) {
       this.handleEscapeSuccess();
     } else {
       this.handleEscapeFailure();
@@ -68,7 +68,14 @@ export class BattleManager {
 
   handleEscapeFailure() {
     console.log("しかし、回り込まれてしまった！");
-    // TODO: 敵の攻撃処理を呼び出す
-    this.handleLose(); // 仮で敗北処理を呼んでおく
+    console.log("敵の攻撃！");
+    // 要件定義v2「再度、確率に基づいた勝敗判定が行われる」に基づき判定
+    if (Math.random() < this.player.winProbability) {
+      console.log("しかし、攻撃をうまくかわした！");
+      // 再度プレイヤーのターン（UI側でコマンド再選択）
+    } else {
+      console.log("致命的な一撃を受けてしまった！");
+      this.handleLose();
+    }
   }
 }

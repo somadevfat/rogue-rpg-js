@@ -7,7 +7,14 @@ import { Goblin, Slime } from "./Enemy.js";
  * new Map() のように直接インスタンス化して使うことは想定していない
  */
 class Map {
-  constructor(name, backgroundImage, encounterRate, mapLevel, enemies) {
+  constructor(
+    name,
+    backgroundImage,
+    encounterRate,
+    mapLevel,
+    enemies,
+    walkLimit = 0
+  ) {
     // new.targetは、newキーワードで呼び出されたコンストラクタを指す
     // これがMap自身だった場合、基底クラスを直接newしようとしたと判断できる
     if (new.target === Map) {
@@ -20,6 +27,7 @@ class Map {
     this.encounterRate = encounterRate;
     this.mapLevel = mapLevel;
     this.enemies = enemies;
+    this.walkLimit = walkLimit;
   }
   createEnemy() {
     // 自分の持つ敵リスト(this.enemies)からランダムに1つクラスを選ぶ
@@ -45,7 +53,7 @@ export class PlainsMap extends Map {
  */
 export class ForestMap extends Map {
   constructor() {
-    super("森", "images/backgrounds/forest.png", 0.3, 2, [Slime, Goblin]); // エンカウント率30%
+    super("森", "images/backgrounds/forest.png", 0.3, 2, [Slime, Goblin], 20); // エンカウント率30%
   }
 }
 
@@ -54,6 +62,6 @@ export class ForestMap extends Map {
  */
 export class SwampMap extends Map {
   constructor() {
-    super("沼", "images/backgrounds/swamp.png", 0.5, 3, [Slime, Goblin]); // エンカウント率50%
+    super("沼", "images/backgrounds/swamp.png", 0.5, 3, [Slime, Goblin], 40); // エンカウント率50%
   }
 }

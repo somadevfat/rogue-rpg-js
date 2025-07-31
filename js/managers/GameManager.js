@@ -122,7 +122,23 @@ export class GameManager {
       return;
     }
     console.log("プレイヤーは歩いている...");
-
+    // 歩数カウント
+    this.player.walkCount++;
+    // 歩数によってマップ変える
+    const forest = new ForestMap();
+    const swamp = new SwampMap();
+    switch (this.player.walkCount) {
+      case forest.walkLimit:
+        this.currentMap = "forest";
+        console.log("森のマップに移動しました。");
+        break;
+      case swamp.walkLimit:
+        this.currentMap = "swamp";
+        console.log("沼のマップに移動しました。");
+        break;
+      default:
+        break; // 平地のまま
+    }
     // エンカウント判定
     if (Math.random() < this.currentMap.encounterRate) {
       this.handleEncounter();

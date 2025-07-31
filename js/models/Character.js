@@ -7,7 +7,8 @@ export class Character {
     encounterRate = 0.5,
     winProbability = 0.5,
     escapeRate = 0.5,
-    expGainMultiplierOnLevelUp = 1.0
+    expGainMultiplierOnLevelUp = 1.0,
+    walkCount = 0
   ) {
     if (new.target === Character) {
       throw new Error(
@@ -23,6 +24,8 @@ export class Character {
     this.escapeRate = escapeRate;
     this.jobName = jobName;
     this.expGainMultiplierOnLevelUp = expGainMultiplierOnLevelUp;
+    this.walkCount = walkCount;
+    this.baseWinProbability = winProbability; // 初期勝率を保存
   }
 
   /**
@@ -41,6 +44,14 @@ export class Character {
       // 次のレベルアップに必要な経験値を更新（小数点以下は切り捨て）
       this.levelUpThreshold = Math.floor(
         this.levelUpThreshold * this.expGainMultiplierOnLevelUp
+      );
+      // 勝率をレベルに比例して再計算（レベルごとに2%上昇、上限95%）
+      this.winProbability = Math.min(
+        this.baseWinProbability + (this.level - 1) * 0.02,
+        0.95
+      );
+      console.log(
+        `レベルアップ！ 勝率が ${this.winProbability.toFixed(3)} になった！`
       );
       leveledUp = true;
     }
