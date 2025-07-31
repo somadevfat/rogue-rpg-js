@@ -1,16 +1,18 @@
+/* 汎用クラス */
 .hidden {
-  display: none !important;
+  display: none !important; /* 要素を非表示にする */
 }
 
-/* 初期化 */
+/* 基本設定・初期化 */
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  box-sizing: border-box; /* 全要素の余白とボーダーをwidth/heightに含める */
 }
 body {
   margin: 0;
   padding: 0;
+  /* 画面全体を使って中央揃え */
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -19,13 +21,15 @@ body {
   color: white;
 }
 
+/* ゲーム全体のコンテナ */
 #game-container {
   width: 90%;
   height: 95vh;
   border: 1px solid #fff;
   margin: 0 auto;
 }
-/*タイトル*/
+
+/* --- タイトル画面 --- */
 #title-screen {
   width: 100%;
   height: 100%;
@@ -35,11 +39,13 @@ body {
   align-items: center;
 }
 
+/* スタート・コンティニューボタン */
 #start-button,
 #continue-button {
   border: 1px solid #fff;
   background-color: black;
   color: white;
+
   font-size: 2rem;
   margin: 20px;
 }
@@ -70,6 +76,7 @@ h1 {
   gap: 40px;
 }
 
+/* 各キャラクターの選択ボックス */
 .character-options > div {
   border: 1px solid #fff;
   background-color: black;
@@ -77,16 +84,24 @@ h1 {
   width: 200px;
   height: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  font-size: 2rem;
+  font-size: 1.5rem;
+  gap: 10px;
+}
+
+.character-options img {
+  width: 60%;
+  height: auto;
 }
 #character-selection-screen p {
   text-align: center;
   width: 100%;
 }
 
+/* 名前入力欄と決定ボタンのグループ */
 .input-group {
   display: flex;
   flex-direction: column;
@@ -94,6 +109,7 @@ h1 {
   gap: 15px;
 }
 
+/* 名前入力欄 */
 #character-name {
   border: 1px solid #fff;
   background-color: black;
@@ -102,6 +118,8 @@ h1 {
   width: 250px;
   text-align: center;
 }
+
+/* 決定ボタン */
 #confirm-character-button {
   border: 1px solid #fff;
   background-color: black;
@@ -109,38 +127,65 @@ h1 {
   padding: 10px 20px;
 }
 
+/* --- フィールド画面（メインゲーム） --- */
 #field-screen {
   width: 100%;
   height: 100%;
-  display: grid;
+  display: grid; /* グリッドレイアウトで画面を分割 */
   grid-template-columns: repeat(5, 1fr);
   flex-direction: column;
   justify-content: center;
 }
 
+/* 敵とプレイヤーが表示される背景エリア */
 #enemy-field-background {
   border: 1px solid #fff;
   margin: 20px;
-  grid-column: 1 / 5;
+  grid-column: 1 / 5; /* グリッドの1-4列目を使用 */
   display: flex;
-  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+/* プレイヤーと敵の表示エリア */
+#player-character-display-area,
+#enemy-display-area {
+  width: 40%;
+  height: 80%;
+  display: flex;
   justify-content: center;
   align-items: center;
 }
-#enemy-display-area {
-  width: 50%;
-  height: 80%;
-  border: 1px solid #fff;
+
+/* プレイヤーと敵の画像 */
+#player-character-image,
+#enemy-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* アスペクト比を維持してフィット */
 }
+
+/* 倒された敵のスタイル */
+#enemy-image.dead {
+  transform: rotate(90deg);
+  filter: grayscale(100%);
+}
+
+/* ステータス表示エリア */
 #status-display-area {
-  grid-column: 5 / 6;
+  grid-column: 5 / 6; /* グリッドの5列目を使用 */
   margin-top: 20px;
   margin-right: 20px;
   border: 1px solid #fff;
   margin-bottom: 20px;
 }
+
+/* コマンド表示エリア */
 #command-display-area {
-  grid-column: 1 / 2;
+  grid-column: 1 / 2; /* グリッドの1列目を使用 */
   margin-left: 20px;
   border: 1px solid #fff;
   margin-bottom: 20px;
@@ -150,21 +195,26 @@ h1 {
   gap: 20px;
 }
 
+/* メッセージ表示エリア */
 #message-display-area {
-  grid-column: 2 / 5;
+  grid-column: 2 / 5; /* グリッドの2-4列目を使用 */
   margin-left: 20px;
   border: 1px solid #fff;
   margin-right: 20px;
   margin-bottom: 20px;
 }
+
+/* 十字キー */
 #d-pad {
-  grid-column: 5 / 6;
+  grid-column: 5 / 6; /* グリッドの5列目を使用 */
   margin-bottom: 20px;
   margin-right: 20px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
 }
+
+/* 十字キーの各ボタン共通スタイル */
 #d-pad > * {
   background-color: black;
   color: white;
@@ -172,52 +222,55 @@ h1 {
   font-size: 24px;
 }
 .dpad-button.up {
-  /* Styles for the up button */
+  /* 上ボタン */
   grid-column: 2 / 3;
   grid-row: 1 / 2;
 }
 
 .dpad-button.left {
-  /* Styles for the left button */
+  /* 左ボタン */
   grid-column: 1 / 2;
   grid-row: 2 / 3;
 }
 
 .dpad-button.center {
-  /* Styles for the center button */
+  /* 中央ボタン */
   grid-column: 2 / 3;
   grid-row: 2 / 3;
 }
 
 .dpad-button.right {
-  /* Styles for the right button */
+  /* 右ボタン */
   grid-column: 3 / 4;
   grid-row: 2 / 3;
 }
 
 .dpad-button.down {
-  /* Styles for the down button */
+  /* 下ボタン */
   grid-column: 2 / 3;
   grid-row: 3 / 4;
 }
 
+/* 攻撃ボタン */
 #attack-button {
   margin-top: 20px;
 }
 
+/* --- オーバーレイ --- */
 #overlay {
-  position: fixed;
+  position: fixed; /* 画面全体を覆う */
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.7);
+  /* 中に表示されるテキストを中央揃え */
   display: flex;
   justify-content: center;
   align-items: center;
   color: white;
   font-size: 2em;
-  z-index: 100;
+  z-index: 100; /* 最前面に表示 */
 }
 
 #overlay.hidden {

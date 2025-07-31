@@ -19,8 +19,17 @@
       <div id="character-selection-screen" class="screen hidden">
         <p id="character-text">キャラクターを選択してください：</p>
         <div class="character-options">
-          <div class="character-card" data-character="warrior">戦士</div>
-          <div class="character-card" data-character="mage">魔法使い</div>
+          <div class="character-card" data-character="warrior">
+            <img src="images/character_senshi_red.png" alt="戦士" />
+            <p>戦士</p>
+          </div>
+          <div class="character-card" data-character="mage">
+            <img
+              src="images/character_mahotsukai_01_green.png"
+              alt="魔法使い"
+            />
+            <p>魔法使い</p>
+          </div>
         </div>
         <label for="character-name">キャラクター名を入力してください：</label>
         <div class="input-group">
@@ -32,7 +41,12 @@
       <!-- フィールド画面 -->
       <div id="field-screen" class="screen hidden">
         <div id="enemy-field-background">
-          <div id="enemy-display-area">敵表示</div>
+          <div id="player-character-display-area">
+            <img id="player-character-image" src="" alt="プレイヤー" />
+          </div>
+          <div id="enemy-display-area">
+            <img id="enemy-image" src="" alt="敵" />
+          </div>
         </div>
         <div id="status-display-area">ステータス表示</div>
         <div id="command-display-area">

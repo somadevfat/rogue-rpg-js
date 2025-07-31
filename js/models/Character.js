@@ -8,7 +8,8 @@ export class Character {
     winProbability = 0.5,
     escapeRate = 0.5,
     expGainMultiplierOnLevelUp = 1.0,
-    walkCount = 0
+    walkCount = 0,
+    image = ""
   ) {
     if (new.target === Character) {
       throw new Error(
@@ -16,6 +17,7 @@ export class Character {
       );
     }
     this.name = name;
+    this.image = image;
     this.level = level;
     this.exp = 0;
     this.levelUpThreshold = levelUpThreshold;
@@ -61,12 +63,34 @@ export class Character {
 
 export class Warrior extends Character {
   constructor(name) {
-    super(name, "戦士", 1, 3, 0.5, 0.7, 0.3, 1.2);
+    super(
+      name,
+      "戦士",
+      1,
+      3,
+      0.5,
+      0.7,
+      0.7,
+      1.2,
+      0,
+      "images/character_senshi_red.png"
+    );
   }
 }
 
 export class Mage extends Character {
   constructor(name) {
-    super(name, "魔法使い", 1, 3, 0.5, 0.6, 0.4, 1.1);
+    super(
+      name,
+      "魔法使い",
+      1,
+      3,
+      0.5,
+      0.6,
+      0.6,
+      1.1,
+      0,
+      "images/character_mahotsukai_01_green.png"
+    );
   }
 }

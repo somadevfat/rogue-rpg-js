@@ -114,6 +114,11 @@ export class GameManager {
     // マップの初期化
     this.currentMap = new PlainsMap(); // 最初のマップは平原
     this.gameState = "field"; // ゲームの状態をフィールドに設定
+
+    // UIの更新
+    this.uiManager.setPlayerImage(this.player.image);
+    this.uiManager.setFieldBackground(this.currentMap.backgroundImage);
+    this.uiManager.hideEnemy();
   }
   /**
    * フィールドを歩く処理
@@ -130,17 +135,19 @@ export class GameManager {
     // 歩数によってマップ変える
     const forest = new ForestMap();
     const swamp = new SwampMap();
-    switch (this.player.walkCount) {
-      case forest.walkLimit:
-        this.currentMap = "forest";
-        console.log("森のマップに移動しました。");
-        break;
-      case swamp.walkLimit:
-        this.currentMap = "swamp";
-        console.log("沼のマップに移動しました。");
-        break;
-      default:
-        break; // 平地のまま
+    let mapChanged = false;
+    if (this.player.walkCount === forest.walkLimit) {
+      this.currentMap = forest;
+      mapChanged = true;
+      console.log("森のマップに移動しました。");
+    } else if (this.player.walkCount === swamp.walkLimit) {
+      this.currentMap = swamp;
+      mapChanged = true;
+      console.log("沼のマップに移動しました。");
+    }
+
+    if (mapChanged) {
+      this.uiManager.setFieldBackground(this.currentMap.backgroundImage);
     }
     // エンカウント判定
     if (Math.random() < this.currentMap.encounterRate) {
@@ -166,6 +173,9 @@ export class GameManager {
     console.log(
       `${this.currentEnemy.name}(レベル${this.currentEnemy.level})があらわれた！`
     );
+
+    // UIに敵を表示
+    this.uiManager.showEnemy(this.currentEnemy.image);
 
     // BattleManagerを生成して戦闘開始
     this.battleManager = new BattleManager(
@@ -204,6 +214,7 @@ export class GameManager {
    */
   handleBattleWin(result) {
     console.log(`${result.defeatedEnemyName}を倒した！`);
+    this.uiManager.setEnemyAsDefeated();
 
     // 経験値をプレイヤーに与える
     console.log(
@@ -217,8 +228,11 @@ export class GameManager {
       );
       // TODO: レベルアップ時のUI表示やSE再生など
     }
-    // 戦闘終了処理
-    this.endBattle();
+
+    // 少し待ってから戦闘終了処理
+    setTimeout(() => {
+      this.endBattle();
+    }, 1500); // 1.5秒待つ
   }
 
   /**
@@ -244,6 +258,7 @@ export class GameManager {
     this.currentEnemy = null;
     this.gameState = "field";
     console.log("フィールドに戻ります。");
+    this.uiManager.hideEnemy();
     // TODO: UIをフィールドモードに戻す処理を追加する
   }
 
@@ -315,6 +330,12 @@ export class GameManager {
       case "平地":
         this.currentMap = new PlainsMap();
         break;
+      case "森":
+        this.currentMap = new ForestMap();
+        break;
+      case "沼":
+        this.currentMap = new SwampMap();
+        break;
       // 他のマップも同様に追加
       default:
         this.currentMap = new PlainsMap(); // 不明な場合はデフォルトマップ
@@ -324,5 +345,10 @@ export class GameManager {
     console.log("ゲームをロードしました:", this.player);
     this.gameState = "field";
     this.sceneManager.show("field");
+
+    // UIの更新
+    this.uiManager.setPlayerImage(this.player.image);
+    this.uiManager.setFieldBackground(this.currentMap.backgroundImage);
+    this.uiManager.hideEnemy();
   }
 }

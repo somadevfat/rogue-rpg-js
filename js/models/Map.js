@@ -1,6 +1,6 @@
 "use strict";
 
-import { Goblin, Slime } from "./Enemy.js";
+import { PurpleSlime, Slime } from "./Enemy.js";
 
 /**
  * マップの基底クラス
@@ -44,7 +44,7 @@ class Map {
 export class PlainsMap extends Map {
   constructor() {
     // super()で親クラス(Map)のコンストラクタを呼び出す
-    super("平地", "images/backgrounds/plains.png", 0.1, 1, [Slime]); // エンカウント率10%
+    super("平地", "images/maptile_sogen_01.png", 0.1, 1, [Slime]); // エンカウント率10%
   }
 }
 
@@ -53,7 +53,7 @@ export class PlainsMap extends Map {
  */
 export class ForestMap extends Map {
   constructor() {
-    super("森", "images/backgrounds/forest.png", 0.3, 2, [Slime, Goblin], 20); // エンカウント率30%
+    super("森", "images/maptile_wood_02.png", 0.3, 2, [Slime, PurpleSlime], 20); // エンカウント率30%
   }
 }
 
@@ -62,6 +62,6 @@ export class ForestMap extends Map {
  */
 export class SwampMap extends Map {
   constructor() {
-    super("沼", "images/backgrounds/swamp.png", 0.5, 3, [Slime, Goblin], 40); // エンカウント率50%
+    super("沼", "images/maptile_koya.png", 0.5, 3, [Slime, PurpleSlime], 40); // エンカウント率50%
   }
 }
