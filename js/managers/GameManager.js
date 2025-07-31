@@ -18,6 +18,9 @@ export class GameManager {
     this.currentEnemy = null; // 現在の敵
     this.currentMap = null; // 現在のマップ
     this.battleManager = null; // 戦闘を管理するマネージャー
+    this.enemyCount = 0; // 敵の出現回数をカウントするための変数
+    this.enemyHistory = []; // 敵の出現履歴を保持する配列
+    this.aveWalkEncounterRate = 0; // 平均エンカウント率を計算するための変数
   }
 
   /**
@@ -153,6 +156,9 @@ export class GameManager {
     const enemy = this.currentMap.createEnemy();
     // 2. ゲームマネージャーに「今戦っているのはこいつだ」と記憶させる
     this.currentEnemy = enemy;
+    this.enemyCount++;
+    this.enemyHistory.push(enemy.name); // 敵の名前を履歴に追加
+    this.aveWalkEncounterRate = (this.enemyCount / this.walkCount) * 100; // 平均エンカウント率を計算
 
     // 3. ゲームの状態を「戦闘中」に変える
     this.gameState = "battle";
