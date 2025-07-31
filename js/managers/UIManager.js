@@ -24,6 +24,10 @@ export class UIManager {
     this.saveButton = document.getElementById("save-button");
     this.dPadButtons = document.querySelectorAll(".dpad-button");
 
+    // オーバーレイ
+    this.overlay = document.getElementById("overlay");
+    this.overlayMessage = document.getElementById("overlay-message");
+
     // ---- コールバックプロパティの初期化 ----
     // GameManagerから設定される
     this.onStartButtonClick = null;
@@ -120,5 +124,21 @@ export class UIManager {
     this.continueButton.disabled = !enabled;
     this.continueButton.style.opacity = enabled ? "1" : "0.5";
     this.continueButton.style.cursor = enabled ? "pointer" : "not-allowed";
+  }
+
+  /**
+   * オーバーレイを表示する
+   * @param {string} message 表示するメッセージ
+   */
+  showOverlay(message) {
+    this.overlayMessage.textContent = message;
+    this.overlay.classList.remove("hidden");
+  }
+
+  /**
+   * オーバーレイを非表示にする
+   */
+  hideOverlay() {
+    this.overlay.classList.add("hidden");
   }
 }
