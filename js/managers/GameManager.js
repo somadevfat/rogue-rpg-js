@@ -227,8 +227,14 @@ export class GameManager {
   handleBattleLose() {
     console.log(`${this.player.name}は倒れてしまった...`);
     console.log("ゲームオーバー");
-    this.resetGame();
-    this.sceneManager.show("title");
+
+    this.uiManager.showOverlay("GAME OVER");
+
+    setTimeout(() => {
+      this.uiManager.hideOverlay();
+      this.resetGame();
+      this.sceneManager.show("title");
+    }, 3000); // 3秒後に実行
   }
 
   /**
