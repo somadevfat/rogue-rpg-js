@@ -28,6 +28,7 @@ export class Character {
     this.expGainMultiplierOnLevelUp = expGainMultiplierOnLevelUp;
     this.walkCount = walkCount;
     this.baseWinProbability = winProbability; // 初期勝率を保存
+    this.enemyKillCount = 0;
   }
 
   /**

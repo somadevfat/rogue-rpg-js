@@ -87,6 +87,11 @@ export class GameManager {
    * @param {string} characterType 選択されたキャラクターのタイプ
    */
   handleCharacterSelect(characterType) {
+    // 新規ゲーム開始時にゲームの状態をリセット
+    this.enemyCount = 0;
+    this.enemyHistory = []; // 配列として初期化
+    this.aveWalkEncounterRate = 0;
+
     // ここでPlayerインスタンスを作成するなどの処理が入る
     const playerName = this.uiManager.characterNameInput.value;
     // 名前の入力チェック
@@ -119,6 +124,13 @@ export class GameManager {
     this.uiManager.setPlayerImage(this.player.image);
     this.uiManager.setFieldBackground(this.currentMap.backgroundImage);
     this.uiManager.hideEnemy();
+    // ★ステータス表示を初期化 (リセットされたGameManagerのプロパティを使用)
+    this.uiManager.updateStatusDisplay(
+      this.player.walkCount,
+      this.player.enemyKillCount,
+      this.aveWalkEncounterRate, // GameManagerのプロパティ
+      this.enemyHistory // GameManagerのプロパティ
+    );
   }
   /**
    * フィールドを歩く処理
@@ -132,6 +144,7 @@ export class GameManager {
     console.log("プレイヤーは歩いている...");
     // 歩数カウント
     this.player.walkCount++;
+
     // 歩数によってマップ変える
     const forest = new ForestMap();
     const swamp = new SwampMap();
@@ -153,6 +166,13 @@ export class GameManager {
     if (Math.random() < this.currentMap.encounterRate) {
       this.handleEncounter();
     }
+    // ステータス表示を更新
+    this.uiManager.updateStatusDisplay(
+      this.player.walkCount,
+      this.player.enemyKillCount,
+      this.aveWalkEncounterRate,
+      this.enemyHistory
+    );
   }
 
   /**
@@ -164,8 +184,8 @@ export class GameManager {
     // 2. ゲームマネージャーに「今戦っているのはこいつだ」と記憶させる
     this.currentEnemy = enemy;
     this.enemyCount++;
-    this.enemyHistory.push(enemy.name); // 敵の名前を履歴に追加
-    this.aveWalkEncounterRate = (this.enemyCount / this.walkCount) * 100; // 平均エンカウント率を計算
+    this.enemyHistory.push(`${this.enemyCount}: ${enemy.name}`); // 敵の名前を履歴に追加
+    this.aveWalkEncounterRate = (this.enemyCount / this.player.walkCount) * 100; // 平均エンカウント率を計算
 
     // 3. ゲームの状態を「戦闘中」に変える
     this.gameState = "battle";
@@ -215,7 +235,8 @@ export class GameManager {
   handleBattleWin(result) {
     console.log(`${result.defeatedEnemyName}を倒した！`);
     this.uiManager.setEnemyAsDefeated();
-
+    // プレイヤーの討伐数を更新
+    this.player.enemyKillCount++;
     // 経験値をプレイヤーに与える
     console.log(
       `${this.player.name}は ${result.expGiven} の経験値を獲得した！`
@@ -263,11 +284,14 @@ export class GameManager {
   }
 
   resetGame() {
-    this.player = null;
-    this.gameState = null;
-    this.currentEnemy = null;
-    this.currentMap = null;
-    this.battleManager = null;
+    this.player = null; // プレイヤー情報を保持
+    this.gameState = null; // ゲームの状態（'field', 'battle'など）
+    this.currentEnemy = null; // 現在の敵
+    this.currentMap = null; // 現在のマップ
+    this.battleManager = null; // 戦闘を管理するマネージャー
+    this.enemyCount = 0; // 敵の出現回数をカウントするための変数
+    this.enemyHistory = []; // 敵の出現履歴を保持する配列
+    this.aveWalkEncounterRate = 0; // 平均エンカウント率を計算するための変数
     console.log("ゲームオーバーオブジェクトリセット後タイトルに戻る。");
   }
 
@@ -287,6 +311,8 @@ export class GameManager {
     const saveData = {
       player: this.player,
       mapName: this.currentMap.name,
+      enemyHistory: this.enemyHistory,
+      aveWalkEncounterRate: this.aveWalkEncounterRate,
       // 将来的にアイテムやクエストなどを追加
     };
 
@@ -306,11 +332,11 @@ export class GameManager {
       alert("セーブデータが見つかりませんでした。");
       return;
     }
-
     // --- プレイヤーデータの復元 ---
     // JSONから復元したデータはただのオブジェクトなので、
     // 正しいクラス(Warrior/Mage)のインスタンスとして再生成する
     const playerData = saveData.player;
+
     switch (playerData.jobName) {
       case "戦士":
         this.player = new Warrior(playerData.name);
@@ -342,6 +368,10 @@ export class GameManager {
         break;
     }
 
+    // --- 討伐履歴やエンカウント率を復元 ---
+    this.enemyHistory = saveData.enemyHistory || [];
+    this.aveWalkEncounterRate = saveData.aveWalkEncounterRate || 0;
+
     console.log("ゲームをロードしました:", this.player);
     this.gameState = "field";
     this.sceneManager.show("field");
@@ -350,5 +380,11 @@ export class GameManager {
     this.uiManager.setPlayerImage(this.player.image);
     this.uiManager.setFieldBackground(this.currentMap.backgroundImage);
     this.uiManager.hideEnemy();
+    this.uiManager.updateStatusDisplay(
+      this.player.walkCount,
+      this.player.enemyKillCount,
+      this.aveWalkEncounterRate,
+      this.enemyHistory
+    );
   }
 }

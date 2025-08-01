@@ -184,4 +184,26 @@ export class UIManager {
   setEnemyAsDefeated() {
     this.enemyImage.classList.add("dead");
   }
+
+  /**
+   * ステータス表示を更新する
+   * @param {number} walkCount 総歩数
+   * @param {number} enemyKillCount 敵の討伐数
+   * @param {number} aveWalkEncounterRate 敵出現平均歩数
+   * @param {string[]} enemyHistory 敵出現ログ（履歴）
+   */
+  updateStatusDisplay(
+    walkCount,
+    enemyKillCount,
+    aveWalkEncounterRate,
+    enemyHistory
+  ) {
+    const statusDisplayArea = document.getElementById("status-display-area");
+    statusDisplayArea.innerHTML = `
+      <p>総歩数: ${walkCount}</p>
+      <p>敵の討伐数: ${enemyKillCount}</p>
+      <p>敵出現平均歩数: ${Number(aveWalkEncounterRate.toFixed(2))}%</p>
+      <p>敵出現ログ: ${enemyHistory.join(", ")}</p>
+    `;
+  }
 }

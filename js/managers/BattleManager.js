@@ -69,7 +69,7 @@ export class BattleManager {
   handleEscapeFailure() {
     console.log("しかし、回り込まれてしまった！");
     console.log("敵の攻撃！");
-    // 要件定義v2「再度、確率に基づいた勝敗判定が行われる」に基づき判定
+    // 「再度、確率に基づいた勝敗判定が行われる」に基づき判定
     if (Math.random() < this.player.winProbability) {
       console.log("しかし、攻撃をうまくかわした！");
       // 再度プレイヤーのターン（UI側でコマンド再選択）
