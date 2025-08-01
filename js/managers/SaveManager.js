@@ -43,6 +43,10 @@ export class SaveManager {
     }
   }
 
+  /**
+   * セーブデータが存在するかどうかを確認する
+   * @returns {boolean} セーブデータがあればtrue
+   */
   hasSaveData() {
     return localStorage.getItem(this.storageKey) !== null;
   }

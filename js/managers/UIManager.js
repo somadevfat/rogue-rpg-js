@@ -19,10 +19,20 @@ export class UIManager {
     );
 
     // フィールド画面
+    this.fieldBackground = document.getElementById("enemy-field-background");
+    this.playerImage = document.getElementById("player-character-image");
+    this.enemyImage = document.getElementById("enemy-image");
     this.attackButton = document.getElementById("attack-button");
     this.escapeButton = document.getElementById("escape-button");
     this.saveButton = document.getElementById("save-button");
     this.dPadButtons = document.querySelectorAll(".dpad-button");
+
+    // オーバーレイ
+    this.overlay = document.getElementById("overlay");
+    this.overlayMessage = document.getElementById("overlay-message");
+
+    // メッセージ表示エリア
+    this.messageDisplayArea = document.getElementById("message-display-area");
 
     // ---- コールバックプロパティの初期化 ----
     // GameManagerから設定される
@@ -33,6 +43,7 @@ export class UIManager {
     this.onAttack = null;
     this.onEscape = null;
     this.onSave = null;
+    this.onInputNameValidation = null;
 
     // ---- 内部状態 ----
     this.selectedCharacterType = null; // 選択されたキャラクタータイプを保持
@@ -66,9 +77,19 @@ export class UIManager {
         // 選択状態を視覚的に示す（例：ボーダーの色を変更）
         this.characterCards.forEach((c) => (c.style.border = "1px solid #fff"));
         card.style.border = "2px solid yellow";
+
+        // 選択時にもバリデーションを実行
+        if (this.onInputNameValidation) {
+          this.onInputNameValidation();
+        }
       });
     });
-
+    // 入力バリデーション
+    this.characterNameInput.addEventListener("input", () => {
+      if (this.onInputNameValidation) {
+        this.onInputNameValidation();
+      }
+    });
     // キャラクター決定ボタン
     this.confirmCharacterButton.addEventListener("click", () => {
       if (this.onCharacterSelect) {
@@ -120,5 +141,99 @@ export class UIManager {
     this.continueButton.disabled = !enabled;
     this.continueButton.style.opacity = enabled ? "1" : "0.5";
     this.continueButton.style.cursor = enabled ? "pointer" : "not-allowed";
+  }
+
+  /**
+   * スタートボタンの表示/非表示を切り替える
+   * @param {boolean} visible 表示する場合はtrue
+   */
+  setStartButtonVisible(visible) {
+    this.startButton.classList.toggle("hidden", !visible);
+  }
+
+  /**
+   * オーバーレイを表示する
+   * @param {string} message 表示するメッセージ
+   */
+  showOverlay(message) {
+    this.overlayMessage.textContent = message;
+    this.overlay.classList.remove("hidden");
+  }
+
+  /**
+   * オーバーレイを非表示にする
+   */
+  hideOverlay() {
+    this.overlay.classList.add("hidden");
+  }
+
+  /**
+   * フィールドの背景画像を設定する
+   * @param {string} imageUrl
+   */
+  setFieldBackground(imageUrl) {
+    this.fieldBackground.style.backgroundImage = `url(${imageUrl})`;
+  }
+
+  /**
+   * プレイヤーの画像を設定する
+   * @param {string} imageUrl
+   */
+  setPlayerImage(imageUrl) {
+    this.playerImage.src = imageUrl;
+    this.playerImage.classList.remove("hidden");
+  }
+
+  /**
+   * 敵の画像を設定し、表示する
+   * @param {string} imageUrl
+   */
+  showEnemy(imageUrl) {
+    this.enemyImage.src = imageUrl;
+    this.enemyImage.classList.remove("hidden", "dead");
+  }
+
+  /**
+   * 敵の画像を非表示にする
+   */
+  hideEnemy() {
+    this.enemyImage.classList.add("hidden");
+  }
+
+  /**
+   * 敵が倒された時の表示にする
+   */
+  setEnemyAsDefeated() {
+    this.enemyImage.classList.add("dead");
+  }
+
+  /**
+   * ステータス表示を更新する
+   * @param {number} walkCount 総歩数
+   * @param {number} enemyKillCount 敵の討伐数
+   * @param {number} aveWalkEncounterRate 敵出現平均歩数
+   * @param {string[]} enemyHistory 敵出現ログ（履歴）
+   */
+  updateStatusDisplay(
+    walkCount,
+    enemyKillCount,
+    aveWalkEncounterRate,
+    enemyHistory
+  ) {
+    const statusDisplayArea = document.getElementById("status-display-area");
+    statusDisplayArea.innerHTML = `
+      <p>総歩数: ${walkCount}</p>
+      <p>敵の討伐数: ${enemyKillCount}</p>
+      <p>敵出現平均歩数: ${Number(aveWalkEncounterRate.toFixed(2))}%</p>
+      <p>敵出現ログ:<br>${enemyHistory.join("<br>")}</p>
+    `;
+  }
+
+  /**
+   * メッセージを表示する
+   * @param {string[]} message 表示するメッセージ
+   */
+  showMessage(...messages) {
+    this.messageDisplayArea.textContent = messages.join("\n");
   }
 }
