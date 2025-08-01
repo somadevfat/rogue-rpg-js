@@ -194,6 +194,11 @@ h1 {
   align-items: center;
   gap: 20px;
 }
+#command-display-area > * {
+  background-color: black;
+  border: 1px solid #fff;
+  color: #fff;
+}
 
 /* メッセージ表示エリア */
 #message-display-area {
@@ -275,4 +280,8 @@ h1 {
 
 #overlay.hidden {
   display: none;
+}
+
+#message-display-area {
+  white-space: pre-wrap;
 }

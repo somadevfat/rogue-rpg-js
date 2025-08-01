@@ -29,6 +29,10 @@ class Map {
     this.enemies = enemies;
     this.walkLimit = walkLimit;
   }
+  /**
+   * このマップに出現する敵をランダムに1体生成する
+   * @returns {Enemy} 生成された敵のインスタンス
+   */
   createEnemy() {
     // 自分の持つ敵リスト(this.enemies)からランダムに1つクラスを選ぶ
     const enemyClass =
