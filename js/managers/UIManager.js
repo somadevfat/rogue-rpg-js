@@ -31,6 +31,9 @@ export class UIManager {
     this.overlay = document.getElementById("overlay");
     this.overlayMessage = document.getElementById("overlay-message");
 
+    // メッセージ表示エリア
+    this.messageDisplayArea = document.getElementById("message-display-area");
+
     // ---- コールバックプロパティの初期化 ----
     // GameManagerから設定される
     this.onStartButtonClick = null;
@@ -40,6 +43,7 @@ export class UIManager {
     this.onAttack = null;
     this.onEscape = null;
     this.onSave = null;
+    this.onInputNameValidation = null;
 
     // ---- 内部状態 ----
     this.selectedCharacterType = null; // 選択されたキャラクタータイプを保持
@@ -73,9 +77,19 @@ export class UIManager {
         // 選択状態を視覚的に示す（例：ボーダーの色を変更）
         this.characterCards.forEach((c) => (c.style.border = "1px solid #fff"));
         card.style.border = "2px solid yellow";
+
+        // 選択時にもバリデーションを実行
+        if (this.onInputNameValidation) {
+          this.onInputNameValidation();
+        }
       });
     });
-
+    // 入力バリデーション
+    this.characterNameInput.addEventListener("input", () => {
+      if (this.onInputNameValidation) {
+        this.onInputNameValidation();
+      }
+    });
     // キャラクター決定ボタン
     this.confirmCharacterButton.addEventListener("click", () => {
       if (this.onCharacterSelect) {
@@ -127,6 +141,14 @@ export class UIManager {
     this.continueButton.disabled = !enabled;
     this.continueButton.style.opacity = enabled ? "1" : "0.5";
     this.continueButton.style.cursor = enabled ? "pointer" : "not-allowed";
+  }
+
+  /**
+   * スタートボタンの表示/非表示を切り替える
+   * @param {boolean} visible 表示する場合はtrue
+   */
+  setStartButtonVisible(visible) {
+    this.startButton.classList.toggle("hidden", !visible);
   }
 
   /**
@@ -203,7 +225,15 @@ export class UIManager {
       <p>総歩数: ${walkCount}</p>
       <p>敵の討伐数: ${enemyKillCount}</p>
       <p>敵出現平均歩数: ${Number(aveWalkEncounterRate.toFixed(2))}%</p>
-      <p>敵出現ログ: ${enemyHistory.join(", ")}</p>
+      <p>敵出現ログ:<br>${enemyHistory.join("<br>")}</p>
     `;
+  }
+
+  /**
+   * メッセージを表示する
+   * @param {string[]} message 表示するメッセージ
+   */
+  showMessage(...messages) {
+    this.messageDisplayArea.textContent = messages.join("\n");
   }
 }

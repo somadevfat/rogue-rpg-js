@@ -1,4 +1,10 @@
 export class Enemy {
+  /**
+   * @param {string} name 敵の名前
+   * @param {number} level レベル
+   * @param {number} expGiven 倒したときに得られる経験値
+   * @param {string} image 敵の画像
+   */
   constructor(
     name = "",
     level = 1,

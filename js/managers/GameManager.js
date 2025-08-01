@@ -21,6 +21,7 @@ export class GameManager {
     this.enemyCount = 0; // 敵の出現回数をカウントするための変数
     this.enemyHistory = []; // 敵の出現履歴を保持する配列
     this.aveWalkEncounterRate = 0; // 平均エンカウント率を計算するための変数
+    this.messageLog = []; // メッセージを保持する配列
   }
 
   /**
@@ -30,6 +31,10 @@ export class GameManager {
     // UIManagerにコンティニューボタンの有効/無効を設定する機能があれば呼び出す
     if (this.uiManager.setContinueButtonEnabled) {
       this.uiManager.setContinueButtonEnabled(this.saveManager.hasSaveData());
+    }
+    // savedataがあればスタートボタンを表示しない
+    if (this.saveManager.hasSaveData()) {
+      this.uiManager.setStartButtonVisible(false);
     }
 
     this.setupCallbacks();
@@ -53,6 +58,11 @@ export class GameManager {
     // キャラクターが選択されたときの処理を、UIManagerに登録する
     this.uiManager.onCharacterSelect = (characterType) => {
       this.handleCharacterSelect(characterType);
+    };
+
+    // キャラ選択及びネーム入力バリデーション
+    this.uiManager.onInputNameValidation = () => {
+      this.handleInputNameValidation();
     };
 
     // 十字キーが押されたときの処理を、UIManagerに登録する
@@ -131,6 +141,22 @@ export class GameManager {
       this.aveWalkEncounterRate, // GameManagerのプロパティ
       this.enemyHistory // GameManagerのプロパティ
     );
+    this.addMessage("十字キーで移動してください");
+  }
+  /**
+   * 名前入力時のバリデーション
+   */
+  handleInputNameValidation() {
+    // 名前の入力チェック
+    if (
+      !this.uiManager.selectedCharacterType ||
+      !this.uiManager.characterNameInput.value
+    ) {
+      this.uiManager.confirmCharacterButton.classList.add("hidden");
+      return;
+    } else {
+      this.uiManager.confirmCharacterButton.classList.remove("hidden");
+    }
   }
   /**
    * フィールドを歩く処理
@@ -142,6 +168,9 @@ export class GameManager {
       return;
     }
     console.log("プレイヤーは歩いている...");
+    console.log(`${this.messageLog.join("\n")}`);
+    this.addMessage("プレイヤーは歩いている...");
+
     // 歩数カウント
     this.player.walkCount++;
 
@@ -153,10 +182,12 @@ export class GameManager {
       this.currentMap = forest;
       mapChanged = true;
       console.log("森のマップに移動しました。");
+      this.addMessage("森のマップに移動しました。");
     } else if (this.player.walkCount === swamp.walkLimit) {
       this.currentMap = swamp;
       mapChanged = true;
       console.log("沼のマップに移動しました。");
+      this.addMessage("沼のマップに移動しました。");
     }
 
     if (mapChanged) {
@@ -176,6 +207,18 @@ export class GameManager {
   }
 
   /**
+   * メッセージをログに追加して表示する
+   * @param {string} msg 表示するメッセージ
+   */
+  addMessage(msg) {
+    const maxLog = 5;
+    this.messageLog.push(msg);
+    if (this.messageLog.length > maxLog) {
+      this.messageLog.shift();
+    }
+    this.uiManager.showMessage(...this.messageLog);
+  }
+  /**
    * 敵とのエンカウント処理
    */
   handleEncounter() {
@@ -190,7 +233,7 @@ export class GameManager {
     // 3. ゲームの状態を「戦闘中」に変える
     this.gameState = "battle";
 
-    console.log(
+    this.addMessage(
       `${this.currentEnemy.name}(レベル${this.currentEnemy.level})があらわれた！`
     );
 
@@ -201,10 +244,11 @@ export class GameManager {
     this.battleManager = new BattleManager(
       this.player,
       this.currentEnemy,
-      (result) => this.handleBattleEnd(result) // 戦闘終了時のコールバックを渡す
+      (result) => this.handleBattleEnd(result), // 戦闘終了時のコールバックを渡す
+      this.addMessage.bind(this) //コールバックのときはbind()しないとバグる
     );
 
-    // TODO: UIManagerに通知して、戦闘用のUI（たたかう・にげるボタン）を表示させる
+    // UIManagerに通知して、戦闘用のUI（たたかう・にげるボタン）を表示させる
     // this.uiManager.showBattleCommands();
   }
 
@@ -233,21 +277,20 @@ export class GameManager {
    * @param {object} result BattleManagerからの戦闘結果
    */
   handleBattleWin(result) {
-    console.log(`${result.defeatedEnemyName}を倒した！`);
+    this.addMessage(`${result.defeatedEnemyName}を倒した！`);
     this.uiManager.setEnemyAsDefeated();
     // プレイヤーの討伐数を更新
     this.player.enemyKillCount++;
     // 経験値をプレイヤーに与える
-    console.log(
+    this.addMessage(
       `${this.player.name}は ${result.expGiven} の経験値を獲得した！`
     );
     const leveledUp = this.player.gainExp(result.expGiven);
 
     if (leveledUp) {
-      console.log(
+      this.addMessage(
         `${this.player.name}はレベル ${this.player.level} に上がった！`
       );
-      // TODO: レベルアップ時のUI表示やSE再生など
     }
 
     // 少し待ってから戦闘終了処理
@@ -260,8 +303,8 @@ export class GameManager {
    * 戦闘敗北時の処理
    */
   handleBattleLose() {
-    console.log(`${this.player.name}は倒れてしまった...`);
-    console.log("ゲームオーバー");
+    this.addMessage("勇者は死んでしまった");
+    this.addMessage("ゲームオーバー");
 
     this.uiManager.showOverlay("GAME OVER");
 
@@ -278,11 +321,13 @@ export class GameManager {
   endBattle() {
     this.currentEnemy = null;
     this.gameState = "field";
-    console.log("フィールドに戻ります。");
+    this.addMessage("歩く方向を押してください");
     this.uiManager.hideEnemy();
-    // TODO: UIをフィールドモードに戻す処理を追加する
   }
 
+  /**
+   * ゲームの状態をリセットする
+   */
   resetGame() {
     this.player = null; // プレイヤー情報を保持
     this.gameState = null; // ゲームの状態（'field', 'battle'など）
@@ -313,7 +358,6 @@ export class GameManager {
       mapName: this.currentMap.name,
       enemyHistory: this.enemyHistory,
       aveWalkEncounterRate: this.aveWalkEncounterRate,
-      // 将来的にアイテムやクエストなどを追加
     };
 
     if (this.saveManager.save(saveData)) {

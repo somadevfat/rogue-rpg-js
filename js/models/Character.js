@@ -1,4 +1,16 @@
 export class Character {
+  /**
+   * @param {string} name キャラクター名
+   * @param {string} jobName 職業名
+   * @param {number} level レベル
+   * @param {number} levelUpThreshold 次のレベルアップに必要な経験値
+   * @param {number} encounterRate エンカウント率
+   * @param {number} winProbability 戦闘の勝率
+   * @param {number} escapeRate 逃走の成功率
+   * @param {number} expGainMultiplierOnLevelUp レベルアップ時の次のレベルアップに必要な経験値の増加倍率
+   * @param {number} walkCount 歩数
+   * @param {string} image キャラクター画像
+   */
   constructor(
     name = "",
     jobName = "",
